@@ -58,7 +58,7 @@ const srcPath = (file, watch = false) => {
   console.error('Unsupported file type entered into Gulp Task Runner for Source Path');
 };
 const distPath = (file, serve = false) => {
-  if (['css', 'js', 'img'].includes(file)) return `./website/dist/${file}`;
+  if (['css', 'js'].includes(file)) return `./website/dist/${file}`;
   if (file === 'html' && serve === false) return './website/dist/**/*.html';
   if (file === 'html' && serve === true) return './website/dist';
   console.error('Unsupported file type entered into Gulp Task Runner for Dist Path');
@@ -74,9 +74,9 @@ const cleanMarkup = (mode) => () => {
 };
 
 // Clean Images Task
-const cleanImages = (mode) => () => {
-  return ['development', 'production'].includes(mode) ? del([distPath('img')]) : undefined;
-};
+// const cleanImages = (mode) => () => {
+//   return ['development', 'production'].includes(mode) ? del([distPath('img')]) : undefined;
+// };
 
 // Clean Styles Task
 const cleanStyles = (mode) => () => {
@@ -107,21 +107,21 @@ const buildMarkup = (mode) => (done) => {
 };
 
 // Build Images Task
-const buildImages = (mode) => (done) => {
-  ['development', 'production'].includes(mode) ? pump([
-    gulp.src(srcPath('img')),
-    gulpImagemin([
-      gulpImagemin.gifsicle(),
-      gulpImagemin.jpegtran(),
-      gulpImagemin.optipng(),
-      gulpImagemin.svgo(),
-      imageminPngquant(),
-      imageminJpegRecompress(),
-    ]),
-    gulp.dest(distPath('img')),
-    browserSync.stream(),
-  ], done) : undefined;
-};
+// const buildImages = (mode) => (done) => {
+//   ['development', 'production'].includes(mode) ? pump([
+//     gulp.src(srcPath('img')),
+//     gulpImagemin([
+//       gulpImagemin.gifsicle(),
+//       gulpImagemin.jpegtran(),
+//       gulpImagemin.optipng(),
+//       gulpImagemin.svgo(),
+//       imageminPngquant(),
+//       imageminJpegRecompress(),
+//     ]),
+//     gulp.dest(distPath('img')),
+//     browserSync.stream(),
+//   ], done) : undefined;
+// };
 
 // Build Styles Task
 const buildStyles = (mode) => (done) => {
@@ -195,8 +195,8 @@ const genericTask = (mode, context = 'building') => {
   const allBootingTasks = [
     Object.assign(cleanMarkup(mode), { displayName: `Booting Markup Task: Clean - ${modeName}` }),
     Object.assign(buildMarkup(mode), { displayName: `Booting Markup Task: Build - ${modeName}` }),
-    Object.assign(cleanImages(mode), { displayName: `Booting Images Task: Clean - ${modeName}` }),
-    Object.assign(buildImages(mode), { displayName: `Booting Images Task: Build - ${modeName}` }),
+    // Object.assign(cleanImages(mode), { displayName: `Booting Images Task: Clean - ${modeName}` }),
+    // Object.assign(buildImages(mode), { displayName: `Booting Images Task: Build - ${modeName}` }),
     Object.assign(cleanStyles(mode), { displayName: `Booting Styles Task: Clean - ${modeName}` }),
     Object.assign(buildStyles(mode), { displayName: `Booting Styles Task: Build - ${modeName}` }),
     Object.assign(cleanScripts(mode), { displayName: `Booting Scripts Task: Clean - ${modeName}` }),
@@ -216,11 +216,11 @@ const genericTask = (mode, context = 'building') => {
     done();
 
     // Watch - Images
-    gulp.watch(srcPath('img', true))
-      .on('all', gulp.series(
-        Object.assign(cleanImages(mode), { displayName: `Watching Images Task: Clean - ${modeName}` }),
-        Object.assign(buildImages(mode), { displayName: `Watching Images Task: Build - ${modeName}` }),
-      ), browserSync.reload);
+    // gulp.watch(srcPath('img', true))
+    //   .on('all', gulp.series(
+    //     Object.assign(cleanImages(mode), { displayName: `Watching Images Task: Clean - ${modeName}` }),
+    //     Object.assign(buildImages(mode), { displayName: `Watching Images Task: Build - ${modeName}` }),
+    //   ), browserSync.reload);
 
     // Watch - Styles
     gulp.watch(srcPath('less', true))
